@@ -15,15 +15,15 @@ end
 
 function load_tst_data(path::String)
     tst_data = DataFrame(CSV.File(path))
-    dropmissing!(tst)
+    dropmissing!(tst_data)
     images = reshape_images(tst_data)
-    return images
+    return reshape(images, 96, 96, 1, 1783)
 end
 
 # Reshapes images into matrices and scales intensity from [0, 255] to [0, 1]
 function reshape_images(df::DataFrame; T=T)
     reshaped = parse.(T, mapreduce(permutedims, vcat, split.(df.Image," ")))
-    return reshaped / maxcolor
+    return reshaped / max_color
 end
 
 # Reshapes keypoints to s scale of -1 to 1
