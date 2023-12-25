@@ -1,28 +1,48 @@
 include("extract_data.jl")
+include("models.jl")
 
+using BSON
+using Flux: params
 using Flux
-using CUDA
 
-# Add your path to data here
-TRAINING_CSV_PATH = "/home/askar/Desktop/facial-keypoints-detection/data/training.csv"
-TESTING_CSV_PATH = "/home/askar/Desktop/facial-keypoints-detection/data/test.csv"
+function train_model!(m, L, X, y;
+        opt = Descent(0.1),
+        batchsize = 128,
+        n_epochs = 50,
+        file_name = "")
 
-# X_train, y_train = load_trn_data("/home/askar/Desktop/facial-keypoints-detection/data/training.csv")
-X_test = load_tst_data(TRAINING_CSV_PATH)
+    println("Initiating splitting into minibatches")
+    batches = Flux.Data.DataLoader((X, y); batchsize, shuffle = true)
 
-# Define the CNN architecture
-model_cnn = Chain(
-    Conv((3, 3), 1=>8, relu),
-    MaxPool((2, 2)),
-    Conv((3, 3), 8=>4, relu),
-    MaxPool((2,2)),
-    x -> reshape(x, :, size(x, 4)),
-    Dense(1936, 1000, relu),
-    Dense(1000, 500, relu),
-    Dense(500, 100, relu),
-    Dense(100, 30),
-    softmax
-)
+    println("Minibatching done, starting to train")
+    for i in 1:n_epochs
+        println(i)
+        Flux.train!(L, params(m), batches, opt)
+        if mod(i, 51) == 0
+            BSON.bson(file_name * "_" * string(i, base  = 10, pad = 2) * ".bson", m=m)
+            println("Model saved after" * string(i, base  = 10, pad = 2) * "iterations")
+        end
+    end
 
-# out1 = model(noisy |> gpu) |> cpu 
-model_cnn(X_test)
+    println("Training successfull, saving current model")
+    BSON.bson(file_name, m=m)
+    println("Successfully saved into " * file_name)
+
+    return
+end
+
+function load_model!(file_name, m; force=false, kwargs...)
+    m_weights = BSON.load(file_name)[:m]
+    Flux.loadparams!(m, params(m_weights))
+end
+
+function train_or_load!(file_name, m, args...; force=false, kwargs...)
+
+    !isdir(dirname(file_name)) && mkpath(dirname(file_name))
+
+    if force || !isfile(file_name)
+        train_model!(m, args...; file_name=file_name, kwargs...)
+    else
+        load_model!(file_name, m; force=false, kwargs...)
+    end
+end
