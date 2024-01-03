@@ -9,3 +9,14 @@ data/train_1_img.csv
 data/training_100_img.csv
 models/model_demo.bson
 models/model2_demo.bson
+data/.goutputstream-L76IG2
+data/IdLookupTable.csv
+data/SampleSubmission.csv
+data/test_1_img.csv
+data/test.csv
+data/train_1_img.csv
+data/training_100_img.csv
+data/training.csv
+models/model_demo.bson
+models/model2_demo.bson
+Manifest.toml

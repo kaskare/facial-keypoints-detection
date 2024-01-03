@@ -1,9 +1,8 @@
 using Flux
-using CUDA
 
 TRAINING_CSV_PATH = "/home/askar/Desktop/facial-keypoints-detection/data/training_100_img.csv"
 TESTING_CSV_PATH = "/home/askar/Desktop/facial-keypoints-detection/data/test_1_img.csv"
-MODEL_PATH = "/home/askar/Desktop/facial-keypoints-detection/models/model2_demo.bson"
+MODEL_PATH = "/home/askar/Desktop/facial-keypoints-detection/models/model2_demo"
 
 # model 1
 model = Chain(
@@ -40,6 +39,5 @@ model_cnn = Chain(
     Dense(1000, 500, relu),
     Dense(500, 100, relu),
     Dense(100, 30),
-    softmax
 )
 
