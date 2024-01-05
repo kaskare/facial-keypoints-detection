@@ -7,10 +7,17 @@ T = Float32
 image_size = 96
 image_half = 48
 
+
+function show_loss(loss)
+    plot(1:length(loss), loss, label="Loss over Epochs", xlabel="Epochs", ylabel="Loss", linewidth=2)
+    title!("Loss Visualization")
+end
+
+
 function show_image(X, y, idx)
     # println(size(img))
     img = reshape(X[:, :, :, idx], image_size, image_size);
-    keypoints = (y[:, idx] .* 48) .+ 48
+    keypoints = (y[:, idx] .* image_half) .+ image_half
     keypoints = reshape(keypoints, 2, 15)
 
     plot(Gray.(reshape(img, image_size, image_size))')

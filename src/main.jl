@@ -13,7 +13,7 @@ ps = Flux.params(m)
 
 # Load the data
 X_train, y_train = load_trn_data(TRAINING_CSV_PATH)
-X_test = load_tst_data(TESTING_CSV_PATH)
+# X_test = load_tst_data(TESTING_CSV_PATH)
 println("Data loaded")
 
 # # Cross entropy
@@ -23,8 +23,10 @@ println("Data loaded")
 L(x,y) = sqrt(Flux.mse(m(X_train), y_train))
 
 grad = gradient(() -> L(X_train, y_train), ps)
+loss = []
+train_model!(m, L, X_train, y_train, loss; file_name=MODEL_PATH)
 
-train_model!(m, L, X_train, y_train; file_name=MODEL_PATH)
+show_loss(loss)
 
-y_test = m(X_test)
-show_image(X_test, y_test, 1)
+# y_test = m(X_test)
+# show_image(X_test, y_test, 1)

@@ -2,7 +2,7 @@ using Flux
 
 TRAINING_CSV_PATH = "/home/askar/Desktop/facial-keypoints-detection/data/training_100_img.csv"
 TESTING_CSV_PATH = "/home/askar/Desktop/facial-keypoints-detection/data/test_1_img.csv"
-MODEL_PATH = "/home/askar/Desktop/facial-keypoints-detection/models/model2_demo"
+MODEL_PATH = "/home/askar/Desktop/facial-keypoints-detection/models/model2"
 
 # model 1
 model = Chain(
